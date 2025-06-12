@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button, Alert, Spinner } from 'react-bootstrap';
+import {Button, Alert, Spinner, NavbarBrand} from 'react-bootstrap';
 import { userApi } from '../api';
 
 export function UserAuth() {
@@ -46,13 +46,13 @@ export function UserAuth() {
 
       {username && username !== 'anonymous' ? (
         <div className="d-flex align-items-center">
-          <span className="me-2">Logged in as: {username}</span>
-          <Button variant="outline-danger" size="sm" onClick={handleLogout}>Logout</Button>
+          <NavbarBrand className="me-2">Hello {username}</NavbarBrand>
+          <Button variant="danger" size="sm" onClick={handleLogout}>Logout</Button>
         </div>
       ) : (
         <div className="d-flex align-items-center">
-          <span className="me-2">Not logged in</span>
-          <Button variant="outline-primary" size="sm" onClick={handleLogin}>Login</Button>
+          <span className="me-2"></span>
+          <Button variant="primary" size="sm" onClick={handleLogin}>Login</Button>
         </div>
       )}
     </div>
