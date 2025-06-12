@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: gateway
+          image: {{.Values.image.backend.name}}:{{.Values.image.backend.tag}}
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DB-HOST
+              valueFrom:
+                secretKeyRef:
+                  name: time-tracker-cluster-app
+                  key: host
+            - name: DB-NAME
+              valueFrom:
+                secretKeyRef:
+                  name: time-tracker-cluster-app
+                  key: dbname
+            - name: DB-USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: time-tracker-cluster-app
+                  key: username
+            - name: DB-PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: time-tracker-cluster-app
+                  key: password
+            - name: external-uri
+              value: "https://{{.Values.ingress.host}}"
+            - name: iam-uri
+              value: {{.Values.iam.uri}}
+            - name: iam-client-id
+              value: {{.Values.iam.client_id}}
+            - name: iam-client-secret
+              value: {{.Values.iam.client_secret}}

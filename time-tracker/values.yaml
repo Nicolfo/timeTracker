@@ -1,0 +1,34 @@
+image:
+  frontend:
+    name: registry.nicolfo.ovh/nicolfo/timetracker-frontend
+    tag: 0.0.3
+  backend:
+    name: registry.nicolfo.ovh/nicolfo/timetracker-backend
+    tag: 0.0.6
+
+ingress:
+  className: nginx
+  host: timetracker.nicolfo.ovh
+
+iam:
+  uri: placeholder
+  client_id: placeholder
+  client_secret: placeholder
+
+
+cluster:
+  type: postgresql
+  mode: standalone
+
+  version:
+    postgresql: "17"
+  cluster:
+    enableSuperuserAccess: true
+    initdb:
+      database: time-tracker
+    monitoring:
+      enabled: false
+    instances: 1
+
+  backups:
+    enabled: false
