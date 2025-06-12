@@ -10,4 +10,5 @@ interface TimestampRegistry: JpaRepository<TimestampEntry,Long> {
     fun findAllByUserIdAndTimestampBetweenOrderByTimestampAsc(userId: String, start: LocalDateTime, end: LocalDateTime): List<TimestampEntry>
     fun getFirstByUserIdOrderByTimestampDesc(userId: String): TimestampEntry?
     fun getFirstByUserIdAndTimestampLessThanOrderByTimestampDesc(userId: String, timestamp: LocalDateTime): TimestampEntry?
+    fun getFirstByUserIdAndTimestampGreaterThanOrderByTimestampAsc(userId: String, timestamp: LocalDateTime): TimestampEntry?
 }

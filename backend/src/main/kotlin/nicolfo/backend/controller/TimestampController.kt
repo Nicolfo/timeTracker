@@ -27,10 +27,6 @@ class TimestampController(private val timestampService: TimestampService) {
         val username = userDetails?.preferredUsername
         val status = timestampService.getCurrentStatus(username)
 
-        // Cannot start a new task if there's one running
-        if(status.isTaskRunning && request?.action == Action.START)
-            throw IllegalStateException("Cannot start a new task while a task is running")
-
         // Create a timestamp based on the current context
         val timestampDTO = TimestampDTO(
             request?.timestamp ?: LocalDateTime.now(),

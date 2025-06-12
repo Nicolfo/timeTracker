@@ -1,4 +1,4 @@
-package nicolfo.backend.security
+package nicolfo.backend.configs
 
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value

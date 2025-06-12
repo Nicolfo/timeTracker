@@ -30,6 +30,17 @@ class TimestampServiceImpl(
             timestamp = timestampDTO.timestamp!!,
             action = timestampDTO.action!!
         )
+        val prevTimestamp = timestampRepository.getFirstByUserIdAndTimestampLessThanOrderByTimestampDesc(userId,timestampDTO.timestamp)
+
+        if(prevTimestamp!=null && prevTimestamp.action == Action.START && timestampDTO.action == Action.START){
+            throw IllegalStateException("Cannot start twice in a row")
+        }
+        // add check for close
+        val nextTimestamp = timestampRepository.getFirstByUserIdAndTimestampGreaterThanOrderByTimestampAsc(userId,timestampDTO.timestamp)
+        if(nextTimestamp!=null && timestampDTO.action == Action.STOP && nextTimestamp.action == Action.STOP){
+            throw IllegalStateException("Cannot stop twice in a row")
+        }
+
         timestampRepository.save(entry)
         return entry.id ?: throw IllegalStateException("Failed to generate ID for timestamp entry")
     }

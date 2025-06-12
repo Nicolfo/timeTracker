@@ -1,60 +1,72 @@
-import { useState, useEffect } from 'react';
+import {useState, useEffect} from 'react';
 import {Button, Alert, Spinner, NavbarBrand} from 'react-bootstrap';
-import { userApi } from '../api';
+import {userApi} from '../api';
+import {IoMdNotificationsOff} from "react-icons/io";
+import {requestFirebaseNotificationPermission} from "../utils/firebaseMessaging.ts";
 
 export function UserAuth() {
-  const [username, setUsername] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+    const [username, setUsername] = useState<string | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [permission, setPermission] = useState(Notification.permission);
 
-  // Fetch the currently logged in user
-  useEffect(() => {
-    const fetchUser = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const user = await userApi.getLoggedInUser();
-        setUsername(user.username);
-      } catch (err) {
-        setError('Failed to fetch user');
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
+    if (permission === "granted")
+        requestFirebaseNotificationPermission().then(r => "Permission granted: " + r).catch(e => "Permission denied: " + e);
+    // Fetch the currently logged in user
+    useEffect(() => {
+        const fetchUser = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const user = await userApi.getLoggedInUser();
+                setUsername(user.username);
+            } catch (err) {
+                setError('Failed to fetch user');
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchUser();
+    }, []);
+
+    // Handle login
+    const handleLogin = () => {
+        window.location.href = '/oauth2/authorization/keycloak-client';
     };
 
-    fetchUser();
-  }, []);
+    // Handle logout
+    const handleLogout = () => {
+        window.location.href = '/logout';
+    };
 
-  // Handle login
-  const handleLogin = () => {
-    window.location.href = '/oauth2/authorization/keycloak-client';
-  };
+    if (loading) {
+        return <Spinner animation="border" size="sm"/>;
+    }
 
-  // Handle logout
-  const handleLogout = () => {
-    window.location.href = '/logout';
-  };
-
-  if (loading) {
-    return <Spinner animation="border" size="sm" />;
-  }
-
-  return (
-    <div className="d-flex align-items-center">
-      {error && <Alert variant="danger" className="mb-0 me-2">{error}</Alert>}
-
-      {username && username !== 'anonymous' ? (
+    return (
         <div className="d-flex align-items-center">
-          <NavbarBrand className="me-2">Hello {username}</NavbarBrand>
-          <Button variant="danger" size="sm" onClick={handleLogout}>Logout</Button>
+            {error && <Alert variant="danger" className="mb-0 me-2">{error}</Alert>}
+
+            {username && username !== 'anonymous' ? (
+                <div className="d-flex align-items-center">
+                    {permission !== 'granted' && (<IoMdNotificationsOff onClick={() => {
+                        Notification.requestPermission().then((permission) => {
+                            setPermission(permission);
+                            console.log('Notification permission status:', permission);
+                        });
+                    }}/>)}
+
+                    <NavbarBrand className="me-2">{username}</NavbarBrand>
+                    <Button variant="danger" size="sm" onClick={handleLogout}>Logout</Button>
+                </div>
+            ) : (
+                <div className="d-flex align-items-center">
+                    <span className="me-2"></span>
+                    <Button variant="primary" size="sm" onClick={handleLogin}>Login</Button>
+                </div>
+            )}
         </div>
-      ) : (
-        <div className="d-flex align-items-center">
-          <span className="me-2"></span>
-          <Button variant="primary" size="sm" onClick={handleLogin}>Login</Button>
-        </div>
-      )}
-    </div>
-  );
+    );
 }
