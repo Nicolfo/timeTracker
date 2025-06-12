@@ -30,10 +30,13 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+//const analytics = getAnalytics(app);
+const messaging = getMessaging(app);
 
-
-
+onBackgroundMessage(messaging, (payload) => {
+    console.log('[firebase-messaging-sw.js] Received background message ', payload);
+    // Customize notification here
+})
 
 
 // Fetch event — do nothing, let the browser handle all requests (bypass all)

@@ -13,7 +13,7 @@ spec:
         app: backend
     spec:
       containers:
-        - name: gateway
+        - name: backend
           image: {{.Values.image.backend.name}}:{{.Values.image.backend.tag}}
           ports:
             - containerPort: 8080
@@ -46,6 +46,8 @@ spec:
               value: {{.Values.iam.client_id}}
             - name: iam-client-secret
               value: {{.Values.iam.client_secret}}
+            - name: SPRING_JPA_SHOW_SQL
+              value: "false"
           volumeMounts:
             - mountPath: /firebase/timetracker-401b1-firebase-adminsdk-fbsvc-a7f6a10a7e.json
               subPath: timetracker-401b1-firebase-adminsdk-fbsvc-a7f6a10a7e.json

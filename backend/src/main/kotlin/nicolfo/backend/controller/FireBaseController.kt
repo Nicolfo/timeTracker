@@ -25,7 +25,7 @@ class FireBaseController(private val firebaseMessageService: FirebaseMessageServ
         firebaseMessageService.sendReminder("It's morning, remember to register your activity!")
     }
 
-    @Scheduled(cron = "0 30 19 * * *")
+    @Scheduled(cron = "0 00 19 * * *")
     fun sendAfterNoonReminder() {
         val today = LocalDateTime.now()
 
