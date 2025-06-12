@@ -8,9 +8,9 @@ export function UserAuth() {
     const [username, setUsername] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [permission, setPermission] = useState(Notification.permission);
+    const [permission, setPermission] = useState(typeof Notification !== "undefined" && "permission" in Notification?Notification.permission:"unsupported");
 
-    if (permission === "granted")
+    if (permission === "granted" && username && username !== 'anonymous')
         requestFirebaseNotificationPermission().then(r => "Permission granted: " + r).catch(e => "Permission denied: " + e);
     // Fetch the currently logged in user
     useEffect(() => {

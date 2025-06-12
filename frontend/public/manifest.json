@@ -1,0 +1,20 @@
+{
+  "name": "Time Tracker",
+  "short_name": "Time Tracker",
+  "start_url": "/",
+  "display": "fullscreen",
+  "background_color": "#fff",
+  "theme_color": "#3f51b5",
+  "icons": [
+    {
+      "src": "logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

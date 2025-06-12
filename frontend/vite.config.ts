@@ -16,28 +16,6 @@ export default defineConfig({
             },
             registerType: 'autoUpdate',
             includeAssets: ['favicon.svg', 'favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
-            manifest: {
-                name: 'Time Tracker',
-                start_url: '/',
-                short_name: 'Time Tracker',
-                description: 'Time Tracker',
-                display: 'standalone',
-                theme_color: '#ffffff',
-                icons: [
-                    {
-                        src: 'apple-touch-icon.png',
-                        sizes: 'any',
-                        type: 'image/png',
-                    },
-                    {
-                        src: 'vite.svg',
-                        sizes: 'any',
-                        type: 'image/svg',
-                    },
-
-
-                ]
-            }
         })],
 
     server: {
