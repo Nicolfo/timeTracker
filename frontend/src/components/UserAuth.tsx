@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import {Button, Alert, Spinner, NavbarBrand} from 'react-bootstrap';
+import {Button, Alert, Spinner, NavbarBrand, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import {userApi} from '../api';
 import {IoMdNotificationsOff} from "react-icons/io";
 import {requestFirebaseNotificationPermission} from "../utils/firebaseMessaging.ts";
@@ -31,6 +31,13 @@ export function UserAuth() {
         fetchUser();
     }, []);
 
+    const handleNotificationRequest = () => {
+        Notification.requestPermission().then((permission) => {
+            setPermission(permission);
+            console.log('Notification permission status:', permission);
+        });
+    };
+
     // Handle login
     const handleLogin = () => {
         window.location.href = '/oauth2/authorization/keycloak-client';
@@ -51,12 +58,25 @@ export function UserAuth() {
 
             {username && username !== 'anonymous' ? (
                 <div className="d-flex align-items-center">
-                    {permission !== 'granted' && (<IoMdNotificationsOff onClick={() => {
-                        Notification.requestPermission().then((permission) => {
-                            setPermission(permission);
-                            console.log('Notification permission status:', permission);
-                        });
-                    }}/>)}
+                    {permission !== 'granted' && permission !== 'unsupported' && (
+                        <OverlayTrigger
+                            placement="bottom"
+                            overlay={
+                                <Tooltip>
+                                    Enable notifications to receive updates.
+                                </Tooltip>
+                            }
+                        >
+                            <Button
+                                variant="primary"
+                                size="sm"
+                                className="me-2 d-flex align-items-center"
+                                onClick={handleNotificationRequest}
+                            >
+                                <IoMdNotificationsOff className="me-1" />
+                            </Button>
+                        </OverlayTrigger>
+                    )}
 
                     <NavbarBrand className="me-2">{username}</NavbarBrand>
                     <Button variant="danger" size="sm" onClick={handleLogout}>Logout</Button>
