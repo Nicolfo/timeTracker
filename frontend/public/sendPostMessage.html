@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Status</title>
+</head>
+<body>
+<script>
+    // Parse URL query parameters
+    // If not on an iframe go on /
+    console.log("Iframe infos - ",window.parent, window);
+    if(window.parent === window)
+        window.location.href = "/";
+
+    const params = new URLSearchParams(window.location.search);
+
+    // Check if any parameter name includes "error" (indicating login failure)
+    const hasError = [...params.keys()].some(key => key.toLowerCase().includes('error'));
+
+    // Determine the message to send to the parent frame
+    const message = hasError ? "session-not-found" : "session-found";
+
+    // Post the message to the parent window
+    window.parent.postMessage({ status: message }, window.location.origin);
+</script>
+</body>
+</html>
