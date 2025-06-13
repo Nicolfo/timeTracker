@@ -240,7 +240,7 @@ export function TimeTracker() {
                     position: 'absolute', 
                     width: '100%', 
                     borderBottom: '1px dashed #666', 
-                    top: 'calc(100% - 480px)', // 8 hours * 60px per hour
+                    top: 'calc(100% - 240px)', //remember that the px are calculated from top of the container
                     zIndex: 1 
                   }}
                 />
@@ -258,26 +258,36 @@ export function TimeTracker() {
                     const heightPx = Math.min(hours * 60, 720); // Cap at 12 hours (720px) for display
 
                     return (
-                      <Col key={index} className="text-center" style={{ flex: '1' }}>
-                        <div style={{ height: '500px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
-                          <div 
-                            style={{ 
-                              height: `${heightPx}px`, 
-                              backgroundColor: barColor, 
-                              width: '80%', 
-                              margin: '0 auto',
-                              borderTopLeftRadius: '4px',
-                              borderTopRightRadius: '4px'
-                            }} 
-                          />
-                        </div>
-                        <div style={{ fontSize: '0.8rem', marginTop: '5px' }}>
-                          {formatDate(day.date)}
-                        </div>
-                        <div style={{ fontSize: '0.8rem' }}>
-                          {formatDuration(day.totalMinutes)}
-                        </div>
-                      </Col>
+                     <Col key={index} className="text-center" style={{ flex: '1' }}>
+                       <div style={{ height: '500px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+                         <OverlayTrigger
+                           placement="top"
+                           overlay={
+                             <Tooltip id={`bar-tooltip-${index}`}>
+                               {formatDate(day.date)}: {formatDuration(day.totalMinutes)}
+                             </Tooltip>
+                           }
+                         >
+                           <div
+                             style={{
+                               height: `${heightPx}px`,
+                               backgroundColor: barColor,
+                               width: '80%',
+                               margin: '0 auto',
+                               borderTopLeftRadius: '4px',
+                               borderTopRightRadius: '4px',
+                               cursor: 'pointer'
+                             }}
+                           />
+                         </OverlayTrigger>
+                       </div>
+                       <div style={{ fontSize: '0.8rem', marginTop: '5px' }}>
+                         {formatDate(day.date)}
+                       </div>
+                       <div style={{ fontSize: '0.8rem' }}>
+                         {formatDuration(day.totalMinutes)}
+                       </div>
+                     </Col>
                     );
                   })}
                 </Row>
