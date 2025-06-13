@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInitiatedLogoutSuccessHandler
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler
 
 
 @EnableWebSecurity
@@ -22,6 +23,7 @@ class SecurityConfig(
     @Value("\${frontend-uri}")
     private val frontendUri:String,
 ) {
+    val customResolver = CustomAuthorizationRequestResolver(crr, "/oauth2/authorization")
 
     fun oidcLogoutSuccessHandler() = OidcClientInitiatedLogoutSuccessHandler(crr)
         .also { it.setPostLogoutRedirectUri(externalUri) }
@@ -35,8 +37,19 @@ class SecurityConfig(
                     .requestMatchers("/api/user/logged-in").permitAll()
                     .anyRequest().authenticated()
             }
-            .oauth2Login {
-                it.successHandler { _, response, _ -> response.sendRedirect(frontendUri) }
+            .oauth2Login { oauth2 ->
+                oauth2.authorizationEndpoint { authEndpoint ->
+                    authEndpoint.authorizationRequestResolver(customResolver)
+                }.successHandler {  request, response, _ ->
+                    response.sendRedirect("$frontendUri/sendPostMessage.html")
+                }
+                    //add error handler
+                .failureHandler { _, response, exception ->
+                    if(exception.message?.contains("login_required")==true)
+                        response.sendRedirect("$frontendUri/sendPostMessage.html?error=login_required")
+                    else
+                        response.sendRedirect("$frontendUri/error")
+                }
             }
             .logout { it.logoutSuccessHandler(oidcLogoutSuccessHandler()) }
             .csrf { it.disable() }
