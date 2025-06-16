@@ -29,6 +29,7 @@ cluster:
     monitoring:
       enabled: false
     instances: 1
-
+    annotations:
+      helm.sh/resource-policy: keep
   backups:
     enabled: false
