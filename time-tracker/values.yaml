@@ -4,7 +4,7 @@ image:
     tag: 0.0.34
   backend:
     name: registry.nicolfo.ovh/nicolfo/timetracker-backend
-    tag: 0.0.14
+    tag: 0.0.15
 
 ingress:
   className: nginx
